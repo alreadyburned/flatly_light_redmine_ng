@@ -1,6 +1,7 @@
-@import url(../../../stylesheets/application.css);
+/* Redmine 7 (Propshaft): the core stylesheet is served at /application.css */
+@import url(/application.css);
 @import url(font-awesome.css);
-@import url(//fonts.googleapis.com/css?family=Lato:300,400,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
 @import url(theme.css);
 @import url(lists.css);
 @import url(color_tasks.css);
@@ -388,3 +389,90 @@ select[onchange="if (this.value != '') { window.location = this.value; }"]{
   top: 17px;
   right: 10px;
 }
+
+/*=========== Redmine 7 compatibility ============*/
+/* Top menu: markup is now nav#top-menu > .general-menu/.profile-menu */
+#top-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  font-size: inherit;
+  padding-inline: 0;
+}
+#top-menu .general-menu ul {
+  flex-direction: column;
+  margin-top: 20px;
+  padding: 0 0 20px 20px;
+  border-bottom: 3px solid #2d3747;
+}
+#top-menu .top-menu__links a,
+#top-menu .top-menu__links a:link,
+#top-menu .top-menu__links a:visited,
+#top-menu #account .dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  color: #a0abbe;
+  background-color: transparent;
+}
+#top-menu .top-menu__links a:hover,
+#top-menu #account .dropdown-trigger:hover {
+  color: #47a3da;
+  background-color: transparent;
+}
+#top-menu .top-menu__links svg.icon-svg,
+#top-menu #account .dropdown-trigger .icon-svg { stroke: #a0abbe; }
+#top-menu .top-menu__links a:hover svg.icon-svg,
+#top-menu #account .dropdown-trigger:hover .icon-svg { stroke: #47a3da; }
+#top-menu #account.top-menu__links ul { flex-direction: column; }
+/* account dropdown sits at the bottom of the side panel, so open it upwards */
+#top-menu #account .dropdown-content {
+  inset-block-start: auto;
+  inset-block-end: 100%;
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+  min-width: 200px;
+  line-height: normal;
+  text-transform: none;
+}
+#top-menu #account .dropdown-content a { color: #354051; font-size: 14px; }
+#top-menu #account .dropdown-content a:hover { color: #47a3da; }
+/* "margin: auto" would absorb the free space of the flex column and push the menu down */
+#top-menu > .redmine-logo { margin: 15px auto 0; flex-shrink: 0; }
+
+/* Header / main menu */
+#header #main-menu { background: transparent; }
+#main-menu li a.selected,
+#main-menu li a.selected:hover {
+  background-color: transparent;
+  box-shadow: none;
+  font-weight: normal;
+}
+#quick-search form { flex: 1 1 auto; }
+
+/* keep the collapsible sidebar working despite "#sidebar { width: 15% !important }" */
+#main.collapsedsidebar #sidebar { width: 0 !important; }
+
+/* Icons: Redmine 7 renders inline SVG icons. Hide the FontAwesome
+   pseudo-element icons where an SVG icon is present to avoid double icons. */
+.icon:has(> svg.icon-svg)::before,
+.icon-only:has(> svg.icon-svg)::before {
+  content: none !important;
+}
+.icon:has(> svg.icon-svg),
+form .icon:has(> svg.icon-svg) {
+  display: inline-flex;
+  padding-left: 0;
+}
+a.icon .icon-svg,
+a.icon-only .icon-svg,
+span.icon-actions .icon-svg { stroke: #4CBAC1; }
+a.icon:hover .icon-svg,
+a.icon-only:hover .icon-svg,
+span.icon-actions:hover .icon-svg { stroke: #47a3da; }
+a.icon .icon-svg-filled,
+a.icon-only .icon-svg-filled { stroke: none; fill: #4CBAC1; }
+a.icon:hover .icon-svg-filled,
+a.icon-only:hover .icon-svg-filled { stroke: none; fill: #47a3da; }

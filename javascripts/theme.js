@@ -73,16 +73,19 @@
     $(document).ready(addElements)
   }
   function addLogo () {
-    $( "#loggedas" ).prepend( "<div class='redmine-logo'></div>" );
-    // body...
+    // Redmine 7 has no #loggedas; put the logo at the top of the side panel
+    if ( $( "#top-menu > .redmine-logo" ).length === 0 ) {
+      $( "#top-menu" ).prepend( "<div class='redmine-logo'></div>" );
+    }
   }
   $(document).ready(addLogo)
 
-  $(window).load(function() {
-    $( "#quick-search form" ).css('margin-right', $( "#s2id_project_quick_jump_box" ).width() + 60);
+  // $(window).load() was removed in jQuery 3
+  $(window).on('load', function() {
+    $( "#quick-search form" ).css('margin-right', ($( "#project-jump" ).outerWidth() || 0) + 30);
     $( 'input[name$="q"]' ).attr( 'placeholder','Enter Search Text' );
     if (activeStaticSidebar) {
-      $( "#wrapper3" ).css( "margin-left", "215px" );
+      $( "#wrapper" ).css( "margin-left", "215px" ); // #wrapper3 no longer exists
       $( "#quick-search" ).css( "left", "200px" );
       $( "#top-menu" ).css( "left", "0" );
       $( "#top-menu" ).css( "width", "215px" );
@@ -115,16 +118,16 @@
       // walk throuth css sheets
       for(i=0; i<s.length; i++) {
           // get all rules
-          r = s[i].cssRules;
+          try { r = s[i].cssRules; } catch (e) { continue; } // cross-origin sheet
           if(!r) continue;
 
           for(j=0; j<r.length; j++) {
               //If there's a rule for media query
               if(r[j] instanceof CSSMediaRule &&
                       r[j].media.mediaText == "screen and (max-width: 899px)") {
-                  for(k=0; k<r[j].cssRules.length; k++) {
-                      // remove all rules of it
-                      r[j].deleteRule(r[j].cssRules[k]);
+                  // remove all rules of it (deleteRule takes an index)
+                  while (r[j].cssRules.length > 0) {
+                      r[j].deleteRule(0);
                   }
                   return true;
               }
